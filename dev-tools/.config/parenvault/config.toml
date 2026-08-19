@@ -1,0 +1,31 @@
+# ParenVault Configuration
+
+[device]
+id = "f719d90b-91cf-4d76-bec8-3f7f1fb362fd"
+name = "nihilux"
+
+[database]
+local_path = "/home/glenn/.local/share/parenvault/parenvault.db"
+remote_host = "gt-nas"
+remote_port = 2665
+remote_name = "parenvault"
+remote_user = "root"
+# remote_password = "***"  # Set via environment variable
+
+[mail]
+maildir_path = "/home/glenn/Mail"
+inbox_folder = "INBOX"
+action_folder = "ParenVault"
+processed_folder = "ParenVault/Processed"
+drafts_folder = "Drafts"
+outbox_folder = "Outbox"
+
+[sync]
+auto_sync = true
+interval_secs = 300
+
+[ui]
+theme = "default"
+date_format = "%Y-%m-%d"
+show_completed = false
+default_view = "dashboard"

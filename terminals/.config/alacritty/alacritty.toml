@@ -1,0 +1,35 @@
+general.import = [ "~/.local/state/omarchy/current/theme/alacritty.toml" ]
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+normal = { family = "Iosevka Nerd Font Mono" }
+bold = { family = "Iosevka Nerd Font Mono" }
+italic = { family = "Iosevka Nerd Font Mono" }
+size = 11
+
+[window]
+padding.x = 14
+padding.y = 14
+decorations = "None"
+
+[keyboard]
+bindings = [
+{ key = "Insert", mods = "Shift", action = "Paste" },
+{ key = "Insert", mods = "Control", action = "Copy" },
+{ key = "Return", mods = "Shift", chars = "\u001B[13;2u" },
+# Alt+number passthrough for zellij tab switching
+{ key = "Key1", mods = "Alt", chars = "\u001B1" },
+{ key = "Key2", mods = "Alt", chars = "\u001B2" },
+{ key = "Key3", mods = "Alt", chars = "\u001B3" },
+{ key = "Key4", mods = "Alt", chars = "\u001B4" },
+{ key = "Key5", mods = "Alt", chars = "\u001B5" },
+{ key = "Key6", mods = "Alt", chars = "\u001B6" },
+{ key = "Key7", mods = "Alt", chars = "\u001B7" },
+{ key = "Key8", mods = "Alt", chars = "\u001B8" },
+{ key = "Key9", mods = "Alt", chars = "\u001B9" },
+]
+
+[terminal]
+osc52 = "CopyPaste"

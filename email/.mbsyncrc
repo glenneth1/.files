@@ -1,0 +1,47 @@
+# ── Paren.Works: glenn@paren.works ──
+IMAPAccount paren-glenn
+Host mail.privateemail.com
+User glenn@paren.works
+PassCmd "pass email/paren.works/glenn"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore paren-glenn-remote
+Account paren-glenn
+
+MaildirStore paren-glenn-local
+Subfolders Verbatim
+Path ~/Mail/Paren-Glenn/
+Inbox ~/Mail/Paren-Glenn/Inbox
+
+Channel paren-glenn
+Far :paren-glenn-remote:
+Near :paren-glenn-local:
+Patterns *
+Create Both
+Expunge Both
+SyncState *
+
+# ── Paren.Works: hello@paren.works ──
+IMAPAccount paren-hello
+Host mail.privateemail.com
+User hello@paren.works
+PassCmd "pass email/paren.works/hello"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore paren-hello-remote
+Account paren-hello
+
+MaildirStore paren-hello-local
+Subfolders Verbatim
+Path ~/Mail/Paren-Hello/
+Inbox ~/Mail/Paren-Hello/Inbox
+
+Channel paren-hello
+Far :paren-hello-remote:
+Near :paren-hello-local:
+Patterns *
+Create Both
+Expunge Both
+SyncState *

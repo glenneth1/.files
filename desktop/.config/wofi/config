@@ -1,0 +1,5 @@
+width=800
+lines=15
+prompt=pass
+matching=fuzzy
+insensitive=true

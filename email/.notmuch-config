@@ -1,0 +1,17 @@
+[database]
+path=/home/glenn/Mail
+
+[user]
+name=Glenn Thompson
+primary_email=glenn@paren.works
+other_email=hello@paren.works
+
+[new]
+tags=new;unread;inbox
+ignore=.mbsyncstate;.uidvalidity
+
+[search]
+exclude_tags=deleted;spam
+
+[maildir]
+synchronize_flags=true

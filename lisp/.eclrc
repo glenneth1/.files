@@ -1,0 +1,24 @@
+;;; .eclrc - ECL initialization file
+;;;
+;;; ECL ships ASDF 3.1 whose UIOP lacks :local-nicknames support.
+;;; Load the newer ASDF 3.3 from ~/common-lisp/asdf/build/asdf.lisp.
+;;; To prevent ASDF from finding its own source tree and triggering a
+;;; self-upgrade stack overflow, set CL_SOURCE_REGISTRY first.
+
+;; 1. Block ASDF from scanning ~/common-lisp/asdf/ during load
+(si:setenv "CL_SOURCE_REGISTRY"
+           (format nil "(:source-registry ~
+              (:tree ~S) ~
+              (:tree ~S) ~
+              (:tree ~S) ~
+              (:tree ~S) ~
+              (:tree ~S) ~
+              :ignore-inherited-configuration)"
+                   (namestring (merge-pathnames "SourceCode/" (user-homedir-pathname)))
+                   (namestring (merge-pathnames "quicklisp/dists/quicklisp/software/" (user-homedir-pathname)))
+                   (namestring (merge-pathnames "quicklisp/dists/ultralisp/software/" (user-homedir-pathname)))
+                   (namestring (merge-pathnames "quicklisp/local-projects/" (user-homedir-pathname)))
+                   (namestring (merge-pathnames "common-lisp/stumpwm-d/" (user-homedir-pathname)))))
+
+;; 2. Load newer ASDF 3.3.7 (has UIOP with :local-nicknames support)
+(load (merge-pathnames "common-lisp/asdf/build/asdf.lisp" (user-homedir-pathname)))

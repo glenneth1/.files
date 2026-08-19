@@ -1,0 +1,193 @@
+;; -*-lisp-*-
+
+;; Load latest ASDF before quicklisp
+;; (require :asdf)  ; skip bundled ASDF - load newer one directly
+(load "~/common-lisp/asdf/build/asdf.lisp")
+
+;; quicklisp setup
+
+;; Muffle ASDF/QL redefinition warnings during setup
+(handler-bind ((warning #'muffle-warning))
+  (load "~/quicklisp/setup.lisp"))
+(use-package :ql)
+(quickload '(bordeaux-threads slynk))
+
+;; /quicklisp
+
+;;===============================================================================
+;; quicklisp utilities
+;;===============================================================================
+
+;; (defun all-ql-systems (&key (distrib "quicklisp"))
+;;   "install every system listed in the supplied ql dist."
+;;   (in-package :ql-dist-user)
+;;   (map nil 'ensure-installed (provided-releases (dist distrib))))
+
+;;===============================================================================
+;;Global Compiler optimisation settings.
+;;===============================================================================
+
+;; (sb-ext:restrict-compiler-policy 'speed 3)
+(sb-ext:restrict-compiler-policy 'debug )
+;; (sb-ext:restrict-compiler-policy 'safety 2)
+(sb-ext:restrict-compiler-policy 'safety)
+
+;;===============================================================================
+;; stupid little utilities too small to be made programs.
+;;===============================================================================
+
+(defun combinations (list n)
+  "given a list and an integer, return N permutations."
+  (cond ((zerop n) '())
+        ((= 1 n) (mapcar 
+                  (function list) list))
+        (t (mapcan (lambda (rest)
+                     (mapcan (lambda 
+                                 (first) (list (cons first rest))) list))
+                   (combinations list (1- n))))))
+
+(defun hash-table-alist (hash-table &key (test (constantly t)))
+  (loop for key being each hash-key in hash-table using (hash-value value)
+        when (funcall test key value)
+          collect (cons key value)))
+
+(defun wc-l (file)
+  (let ((buffer-size 10000))
+    (with-open-file (stream file :element-type '(unsigned-byte 8))
+      (let ((buffer (make-array buffer-size :element-type '(unsigned-byte 8)))
+            (count 0))
+        (multiple-value-bind (i partial)
+            (floor (file-length stream) buffer-size)
+          (dotimes (j i)
+            (read-sequence buffer stream)
+            (incf count (count 10 buffer)))
+          (read-sequence buffer stream :end partial)
+          (incf count (count 10 buffer :end partial)))
+        count))))
+
+(defun ap (string &optional package)    ; be more liberal about 2nd arg
+  (apply #'apropos string (when package (list (find-package package)))))
+
+(defun de (&rest rest) (apply #'describe rest))
+(defun dis (&rest rest) (apply #'disassemble rest))
+(defun mxp (&rest rest) (pprint (apply #'macroexpand rest)))
+(defun mxp0 (&rest rest) (apply #'macroexpand rest))     ; same, but w/o PP
+(defun mxp1 (&rest rest) (apply #'macroexpand-1 rest))
+;(defun mxp* (&rest rest) (apply #'walker:macroexpand-all rest))
+
+;; CLOS utilities
+(defun get-slots (object)
+  ;; thanks to cl-prevalence
+  #+openmcl
+  (mapcar #'ccl:slot-definition-name
+      (#-openmcl-native-threads ccl:class-instance-slots
+       #+openmcl-native-threads ccl:class-slots
+       (class-of object)))
+  #+cmu
+  (mapcar #'pcl:slot-definition-name (pcl:class-slots (class-of object)))
+  #+lispworks
+  (mapcar #'hcl:slot-definition-name (hcl:class-slots (class-of object)))
+  #+allegro
+  (mapcar #'mop:slot-definition-name (mop:class-slots (class-of object)))
+  #+sbcl
+  (mapcar #'sb-mop:slot-definition-name (sb-mop:class-slots (class-of object)))
+  #+clisp
+  (mapcar #'clos:slot-definition-name (clos:class-slots (class-of object)))
+  #-(or openmcl cmu lispworks allegro sbcl clisp)
+  (error "not yet implemented"))
+
+;; string utilities
+(defun strip-surrounding-whitespace (str)
+  "Strip whitespace characters from beginning and end of a string."
+  (string-trim '(#\Space #\Newline #\Return #\Tab) str))
+
+;; #-swank
+;; (progn
+;;   (require :sb-aclrepl)
+;;   (quickload :linedit)
+;;   (funcall (intern "INSTALL-REPL" :linedit) :wrap-current t))
+
+;; some shell utilities
+
+;; (with-output-to-string (s)
+;;        (sb-ext:run-program "/bin/ps" '("-ef") :env nil :output s))
+
+
+;; just use uiop for this stuff.
+;; (defmacro command-string (command &rest args)
+;;   (let ((stream (gensym)))
+;;     `(strip-surrounding-whitespace
+;;       (with-output-to-string (,stream)
+;;         (sb-ext:run-program ,command '(,@args) :output ,stream)))))
+
+
+(defun uptime ()
+  (strip-surrounding-whitespace
+   (uiop:run-program "/usr/bin/uptime" :output :string)))
+
+(defun w ()
+  (strip-surrounding-whitespace
+   (uiop:run-program "/usr/bin/w" :output :string)))
+
+(defun rr ()
+  (quickload :cicada-dispatcher)
+  (in-package :cdpx))
+
+;; (defun ii ()
+;;   (quickload :icfp-2012)
+;;   (in-package :icfp-2012))
+
+;; generate an SBCL image file preloaded with the systems that I pretty much always use.
+
+(defun freeze-sbcl ()
+  (dolist (system '("alexandria"
+                    "babel"
+                    "bordeaux-threads"
+                    "cffi"
+                    "cl-ppcre"
+                    "cl-strings"
+                    "closer-mop"
+                    "dexador"
+                    "hunchentoot"
+                    "iolib"
+                    "local-time"
+                    "named-readtables"
+                    "net-telent-date"
+                    "njson/jzon"
+                    "quickapp"
+                    "rutils"
+                    "slynk"
+                    "uiop"
+                    "asdf"))
+    (ql:quickload system))
+  #+sbcl
+  (sb-ext:save-lisp-and-die "sbcl.core" :compression 22))
+
+(defun let-us-begin (&key (port 4005))
+  (if (find-package :slynk)
+      (progn
+        (bt:make-thread (lambda () (slynk:create-server :port port :dont-close t)))
+        (let ((sym (find-symbol "*USE-DEDICATED-OUTPUT-STREAM*" :slynk)))
+          (when (and sym (boundp sym))
+            (setf (symbol-value sym) nil))))
+    (error "Slynk is not loaded in this image")))
+
+(defun heron-area-triangle (a b d)
+  "Calculate the area of a triangle whose sides are of known length.
+In geometry, Heron's formula (or Hero's formula) gives the area of a
+triangle in terms of the three side lengths a, b, c. If s = 1/2 (a + b + c)
+is the semiperimeter of the triangle, the area A is,
+    A = s ( s − a ) ( s − b ) ( s − c ) . A={\sqrt {s(s-a)(s-b)(s-c)}}."
+
+  (let ((s (/ (+ a b d) 2)))
+    (sqrt (* s (- s a) (- s b) (- s d)))))
+
+;;(uiop:dump-image "~/.cache/sbcl/sbcl.core")
+
+;; garbage collector tunage. mostly unneccessary, but this is how we do it.
+;; (setf (sb-ext:bytes-consed-between-gcs) (* 4 53687091))
+;; (setf (sb-ext:generation-bytes-consed-between-gcs 0) (* 2 10737418))
+
+;; for common lisp options nuker.
+(sb-posix:setenv "CC" "gcc" 1)
+

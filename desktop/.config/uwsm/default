@@ -1,0 +1,7 @@
+# Changes require a restart to take effect.
+
+export TERMINAL=xdg-terminal-exec
+export EDITOR=nvim
+
+# Used by terminal programs (like gh) to open URLs detached from the terminal process tree
+export BROWSER=omarchy-launch-browser

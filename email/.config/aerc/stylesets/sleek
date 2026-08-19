@@ -1,0 +1,55 @@
+# Sleek dark theme for aerc
+
+# Base colors
+*.default=true
+*.selected.bg=#3b4261
+*.selected.fg=#c0caf5
+*.selected.bold=true
+
+# Border styling
+border.bg=#1a1b26
+border.fg=#565f89
+
+# Status bar
+statusline_default.bg=#1a1b26
+statusline_default.fg=#a9b1d6
+statusline_error.fg=#f7768e
+statusline_error.bold=true
+statusline_success.fg=#9ece6a
+statusline_success.bold=true
+
+# Tab bar
+tab.bg=#1a1b26
+tab.fg=#565f89
+tab.selected.bg=#3b4261
+tab.selected.fg=#c0caf5
+tab.selected.bold=true
+
+# Directory list (folders)
+dirlist_default.fg=#a9b1d6
+dirlist_unread.fg=#7aa2f7
+dirlist_unread.bold=true
+dirlist_recent.fg=#9ece6a
+
+# Message list
+msglist_default.fg=#a9b1d6
+msglist_unread.fg=#7aa2f7
+msglist_unread.bold=true
+msglist_deleted.fg=#565f89
+msglist_flagged.fg=#e0af68
+msglist_marked.bg=#3b4261
+msglist_marked.fg=#bb9af7
+
+# Compose
+completion_default.bg=#1a1b26
+completion_default.fg=#a9b1d6
+completion_gutter.bg=#1a1b26
+completion_pill.bg=#7aa2f7
+completion_pill.fg=#1a1b26
+
+# Selector
+selector_default.fg=#a9b1d6
+selector_focused.bg=#3b4261
+selector_focused.fg=#c0caf5
+selector_focused.bold=true
+selector_chooser.bold=true

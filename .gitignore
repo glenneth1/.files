@@ -1,0 +1,38 @@
+# Secrets
+irc/.config/weechat/sec.conf
+
+# Caches and state
+nvim/.config/nvim/lazy/
+**/__pycache__/
+**/*.log
+**/*.tmp
+**/*.core
+
+# Backup files
+**/*.bak
+**/*.bak.*
+**/*.omarchy-upgrade-*
+
+# Variety wallpaper downloads (state, not config)
+audio/.config/variety/Downloaded/
+audio/.config/variety/.firstrun
+audio/.config/variety/.last_change_time
+audio/.config/variety/.version
+
+# Weechat state
+irc/.config/weechat/python/
+irc/.config/weechat/*.bak.*
+
+# Hypr backups
+hypr/.config/hypr/bkup/
+hypr/.config/hypr/*.bak.*
+hypr/.config/hypr/*.omarchy-upgrade-*
+
+# Nvim state
+nvim/.config/nvim/lazy-lock.json
+
+# Gilt state
+dev-tools/.config/gilt/recent-repos.txt
+
+# JJ state
+dev-tools/.config/jj/repos/
