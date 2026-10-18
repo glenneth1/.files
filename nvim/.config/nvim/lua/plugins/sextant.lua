@@ -6,13 +6,13 @@ return {
     opts = function(_, opts)
       local configs = require("lspconfig.configs")
       if not configs.sextant then
+        local util = require("lspconfig.util")
         configs.sextant = {
           default_config = {
             cmd = { "/home/glenn/SourceCode/sextant/sextant" },
-            filetypes = { "lisp" },
+            filetypes = { "lisp", "commonlisp" },
             root_dir = function(fname)
-              return require("lspconfig.util").find_git_ancestor(fname)
-                or vim.fn.getcwd()
+              return util.root_pattern(".git", "*.asd", "*.asdf")(fname) or util.path.dirname(fname)
             end,
             settings = {},
           },
